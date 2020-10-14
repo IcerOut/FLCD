@@ -1,9 +1,11 @@
+from collections import OrderedDict
+
 from MyString import MyString
 
 
 class SymbolTable:
     def __init__(self):
-        self.symbol_to_value = {}
+        self.symbol_to_value = OrderedDict()
         self.value_reached = 1
 
     def search_symbol(self, symbol: str) -> int:
