@@ -37,3 +37,10 @@ class SymbolTable:
 
         # Return the value reached minus 1 because it was previously incremented
         return self.value_reached - 1
+
+    def __str__(self):
+        contents = '\n\t\t'.join(
+                [f'"{key}": {value}' for key, value in self.symbol_to_value.items()])
+        return f'SymbolTable{{\n\t\t{contents}\n\t\t}}'
+
+    __repr__ = __str__

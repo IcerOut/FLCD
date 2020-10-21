@@ -1,0 +1,27 @@
+# Verify if a number is prime
+{
+	# Read the number
+	print("nr = ");
+	int nr = input(int);
+	int divisor = 2;
+	int ok = 1;
+	# Iterate through all numbers in range(2, n/2) and check
+	# if they divide the number
+	while (divisor < (nr / 2))
+	{
+		if ((nr % divisor) == 0)
+		{
+			ok = 0;
+		}
+		divisor = divisor + 1;
+	}
+	# Print the result
+	if (ok == 1)
+	{
+		print("The number ", nr ," is prime.");
+	}
+	else
+	{
+		print("The number ", nr ," is not prime.");
+	}
+}

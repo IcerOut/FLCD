@@ -1,0 +1,39 @@
+# Check if a number appears in a given array of numbers
+{
+	# Read the number
+	int my_array[30];
+	int i = 0;
+	int n = 0;
+	int sum = 0;
+	found = 0;
+	int searched;
+	
+	print("my_array[", n, "] = ");
+	my_array[n] = input(int);
+	n = n + 1;
+	while (my_array[n - 1] != -1)
+	{
+		print("my_array[", n, "] = ");
+		my_array[n] = input(int);
+		n = n + 1;
+	}
+	print("searched = ");
+	searched = input(int);
+		
+	# Iterate through all numbers in the array and check
+	# if they are the searched number
+	while ((i < n) and (found = 0))
+	{
+		if (my_array[i] == searched)
+		{
+			print("The number was found at position ", i);
+			found = 1;
+		}
+	}
+	
+	# If the number wasn't found, print that
+	if (found == 0)
+	{
+		print("The number was not found in the array.");
+	}
+}

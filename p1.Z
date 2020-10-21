@@ -1,0 +1,24 @@
+# Compute the max of 3 numbers
+{
+	# Read the 3 numbers
+	print("num_1 = ");
+	int num_1 = input(int);
+	print("num_2 = ");
+	int num_2 = input(int);
+	print("num_3 = ");
+	int num_3 = input(int);
+
+	# Find the maximum and print it
+	if ((num_1 > num_2) and (num_1 > num_3))
+	{
+		print(num_1);
+	}
+	elif ((num_2 > num_1) and (num_2 > num_3))
+	{
+		print(num_2);
+	}
+	else
+	{
+		print(num_3);
+	}
+}

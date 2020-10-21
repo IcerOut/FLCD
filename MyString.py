@@ -2,7 +2,11 @@ class MyString:
     HASH_NUMBER = 65536
 
     def __init__(self, value: str):
-        self.value = value
+        self.value = value \
+            .lstrip('"') \
+            .lstrip("'") \
+            .rstrip('"') \
+            .rstrip("'")
 
     def __hash__(self):
         """
