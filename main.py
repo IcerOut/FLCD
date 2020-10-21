@@ -7,7 +7,7 @@ if __name__ == '__main__':
     #     print(lexical_analyser)
     #     print('\n' + '=' * 30)
 
-    filename = 'p1err.Z'
+    filename = 'p1.Z'
     lexical_analyser = LexicalAnalyser()
     lexical_analyser.parse(filename)
     lexical_analyser.output_files(filename)

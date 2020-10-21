@@ -9,7 +9,7 @@
 	int num_2 = input(int);
 	print("num_3 = ");
 	# Error 2: 3_num - variables can only start with latin letters or underscore
-	int 3_num = input(int);
+	int 3_num = -15;
 	
 	# Find the maximum and print it
 	if ((num_1 > num_2) and (num_1 > num_3))

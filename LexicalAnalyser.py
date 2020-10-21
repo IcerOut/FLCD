@@ -91,8 +91,16 @@ class LexicalAnalyser:
                 # Remove the empty strings from the list
                 split_line = list(filter(None, split_line))
                 for token in split_line:
-                    # We are in a string and haven't just finished it
-                    if in_string and token != string_delimiter:
+                    # If it's a newline, we check if we're not in a string and ignore it
+                    if token == '\n':
+                        if in_string:
+                            self.raise_lexical_error(
+                                    f'Lexical error on line {line_index + 1}: Unexpected line end while parsing string!')
+                            in_string = False
+                        else:
+                            pass
+                    # Else we are in a string and haven't just finished it
+                    elif in_string and token != string_delimiter:
                         string_literal += token
 
                     # Else if it's a '#', the rest of the line is a comment and we don't parse it
@@ -111,7 +119,7 @@ class LexicalAnalyser:
                         elif token == string_delimiter:
                             string_literal += token
                             index = self.__ST.add_symbol(string_literal)
-                            self.gen_PIF(string_literal, index)
+                            self.gen_PIF('const', index)
                             in_string = False
 
                         # Else it's the other delimiter (so we add it to the string normally)
@@ -122,28 +130,20 @@ class LexicalAnalyser:
                     elif token in [' ', '\t']:
                         pass
 
-                    # Else if it's a newline, we check if we're not in a string and ignore it
-                    elif token == '\n':
-                        if in_string:
-                            self.raise_lexical_error(
-                                    f'Lexical error on line {line_index + 1}: Unexpected line end while parsing string!')
-                        else:
-                            pass
-
                     # Else if it's part of the tokens list, we add it to the PIF with index 0
                     #     (because it's a reserved word, operator or separator)
                     elif token in self.__tokens:
                         self.gen_PIF(token, 0)
 
                     # Else if it's a numerical constant
-                    elif re.match('^-?[0-9]+$', token):
+                    elif re.match('^-?[1-9][0-9]*$', token):
                         index = self.__ST.add_symbol(token)
-                        self.gen_PIF(token, index)
+                        self.gen_PIF('const', index)
 
                     # Else if it's an identifier
                     elif re.match('^[a-zA-Z][_a-zA-Z0-9]*$', token):
                         index = self.__ST.add_symbol(token)
-                        self.gen_PIF(token, index)
+                        self.gen_PIF('identifier', index)
 
                     # Otherwise, it's a lexical error so we print it
                     else:
