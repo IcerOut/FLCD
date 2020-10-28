@@ -1,0 +1,8 @@
+The SymbolTable is implemented on a hashtable.
+"num_1 = ": 1
+"num_1": 2
+"num_2 = ": 3
+"num_2": 4
+"num_3 = ": 5
+"-15": 6
+"num_3": 7

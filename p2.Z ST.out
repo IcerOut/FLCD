@@ -1,0 +1,11 @@
+The SymbolTable is implemented on a hashtable.
+"nr = ": 1
+"nr": 2
+"divisor": 3
+"2": 4
+"ok": 5
+"1": 6
+"0": 7
+"The number ": 8
+" is prime.": 9
+" is not prime.": 10

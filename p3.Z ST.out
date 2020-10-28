@@ -1,0 +1,16 @@
+The SymbolTable is implemented on a hashtable.
+"my_array": 1
+"30": 2
+"i": 3
+"0": 4
+"n": 5
+"sum": 6
+"found": 7
+"searched": 8
+"my_array[": 9
+"] = ": 10
+"1": 11
+"-1": 12
+"searched = ": 13
+"The number was found at position ": 14
+"The number was not found in the array.": 15
