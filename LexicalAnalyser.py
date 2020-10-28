@@ -136,7 +136,7 @@ class LexicalAnalyser:
                         self.gen_PIF(token, 0)
 
                     # Else if it's a numerical constant
-                    elif re.match('^-?[1-9][0-9]*$', token):
+                    elif re.match('^0|(-?[1-9][0-9]*)$', token):
                         index = self.__ST.add_symbol(token)
                         self.gen_PIF('const', index)
 
