@@ -1,4 +1,5 @@
 import re
+from collections import defaultdict
 
 
 class FiniteAutomata:
@@ -19,7 +20,9 @@ class FiniteAutomata:
             Q = set(lines[0].split(','))
             E = set(lines[1].split(','))
             transitions = [tr.split(',') for tr in lines[2].split('; ')]
-            S = {(tr[0], tr[1]): tr[2] for tr in transitions}
+            S = defaultdict(set)
+            for tr in transitions:
+                S[(tr[0], tr[1])].add(tr[2])
             Q0 = lines[3]
             F = set(lines[4].split(','))
             return cls(Q, E, S, Q0, F)
@@ -41,7 +44,8 @@ class FiniteAutomata:
         for key, value in S.items():
             assert key[0] in Q, f'A transition in S uses an invalid state: {key[0]}!'
             assert key[1] in E, f'A transition in S uses an invalid alphabet value: {key[1]}!'
-            assert value in Q, f'A transition in S uses an invalid state: {value}!'
+            for state in value:
+                assert state in Q, f'A transition in S uses an invalid state: {state}!'
 
         assert pattern.match(Q0), f'Q0 is invalid: {Q0}!'
 
@@ -60,7 +64,7 @@ class FiniteAutomata:
     def _pretty_print_S(self):
         temporary_str_S = []
         for key, value in self.S.items():
-            temporary_str_S.append(f'\t({key[0]}, {key[1]}) -> {value}')
+            temporary_str_S.append(f'\t({key[0]}, {key[1]}) -> {{ {", ".join(value)} }}')
         str_S = ',\n'.join(temporary_str_S)
         return f'S = {{\n' \
                f'{str_S}\n' \
@@ -100,6 +104,38 @@ class FiniteAutomata:
             return 'Invalid choice! Please choose one of the 4 given inputs!'
         else:
             return self.pretty_print(user_choice)
+
+    def sequence_accepted(self, sequence: str) -> bool:
+        for transition in self.S.values():
+            if len(transition) != 1:
+                # The given Finite Automata is not deterministic
+                return False
+
+        sequence = list(sequence)
+
+        # We start from the initial state
+        current_state = self.Q0
+
+        while sequence:
+            # We put the symbol that transitions us to the next state in transition_symbol
+            transition_symbol, *sequence = sequence
+
+            if transition_symbol not in self.E:
+                # The transition symbol is not part of the alphabet
+                return False
+
+            if (current_state, transition_symbol) not in self.S.keys():
+                # There is no transition starting from the current state and using the transition symbol
+                return False
+
+            current_state = tuple(self.S[(current_state, transition_symbol)])[0]
+
+        if current_state not in self.F:
+            # The state the sequence ended on is not a final state
+            return False
+
+        # If none of the other return statements were hit, the sequence is accepted by our FA
+        return True
 
     # <editor-fold desc="To String">
     def __str__(self):
