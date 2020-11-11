@@ -33,7 +33,7 @@ class FiniteAutomata:
     def _validate_params(Q: set, E: set, S: dict, Q0: str, F: set):
         # Q, E, F and the keys of S are already guaranteed
         #     to be unique by using sets and dictionaries
-        pattern = re.compile('^[A-Za-z0-9]+$')
+        pattern = re.compile('^[A-Za-z0-9_-]+$')
 
         for elem in Q:
             assert pattern.match(elem), f'An element in Q is invalid: {elem}!'
@@ -77,13 +77,18 @@ class FiniteAutomata:
         str_F = ', '.join(self.F)
         return f'F = {{ {str_F} }}'
 
+    def _pretty_print_sequence_accepted(self):
+        sequence = input('Sequence = ')
+        return self.sequence_accepted(sequence)
+
     def pretty_print(self, element: str):
         element_to_function = {
             'Q': self._pretty_print_Q,
             'E': self._pretty_print_E,
             'S': self._pretty_print_S,
             'Q0': self._pretty_print_Q0,
-            'F': self._pretty_print_F
+            'F': self._pretty_print_F,
+            'T': self._pretty_print_sequence_accepted
             }
         return element_to_function[element]()
 
@@ -95,21 +100,22 @@ class FiniteAutomata:
                'Enter S to see the set of transitions\n' \
                'Enter Q0 to see the initial state\n' \
                'Enter F to see the set of final states\n' \
+               'Enter T to test a sequence\n' \
                'Enter X to exit\n' \
                '>'
         user_choice = input(menu).upper()
         if user_choice == 'X':
             return ''
-        if user_choice not in ['Q', 'E', 'S', 'Q0', 'F']:
+        if user_choice not in ['Q', 'E', 'S', 'Q0', 'F', 'T']:
             return 'Invalid choice! Please choose one of the 4 given inputs!'
         else:
             return self.pretty_print(user_choice)
 
-    def sequence_accepted(self, sequence: str) -> bool:
+    def sequence_accepted(self, sequence: str) -> bool or str:
         for transition in self.S.values():
             if len(transition) != 1:
                 # The given Finite Automata is not deterministic
-                return False
+                return "The automata is not deterministic"
 
         sequence = list(sequence)
 
