@@ -1,5 +1,6 @@
 import re
 
+from FiniteAutomata import FiniteAutomata
 from SymbolTable import SymbolTable
 
 
@@ -79,6 +80,8 @@ class LexicalAnalyser:
         in_string = False
         string_delimiter = ''
         string_literal = ''
+        identifier_FA = FiniteAutomata.read_from_file('identifier_FA.in')
+        numeric_constant_FA = FiniteAutomata.read_from_file('numeric_constant_FA.in')
 
         with open(filename, 'r') as program_file:
             for line_index, line in enumerate(program_file):
@@ -136,12 +139,12 @@ class LexicalAnalyser:
                         self.gen_PIF(token, 0)
 
                     # Else if it's a numerical constant
-                    elif re.match('^0|(-?[1-9][0-9]*)$', token):
+                    elif numeric_constant_FA.sequence_accepted(token) is True:
                         index = self.__ST.add_symbol(token)
                         self.gen_PIF('const', index)
 
                     # Else if it's an identifier
-                    elif re.match('^[a-zA-Z][_a-zA-Z0-9]*$', token):
+                    elif identifier_FA.sequence_accepted(token) is True:
                         index = self.__ST.add_symbol(token)
                         self.gen_PIF('identifier', index)
 

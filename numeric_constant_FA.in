@@ -1,0 +1,5 @@
+start,nzdigit,end,justzeroend
+0,1,2,3,4,5,6,7,8,9,-
+start,0,justzeroend; start,-,nzdigit; nzdigit,1,end; nzdigit,2,end; nzdigit,3,end; nzdigit,4,end; nzdigit,5,end; nzdigit,6,end; nzdigit,7,end; nzdigit,8,end; nzdigit,9,end; nzdigit,1,end; nzdigit,2,end; nzdigit,3,end; nzdigit,4,end; nzdigit,5,end; nzdigit,6,end; nzdigit,7,end; nzdigit,8,end; nzdigit,9,end; start,1,end; start,2,end; start,3,end; start,4,end; start,5,end; start,6,end; start,7,end; start,8,end; start,9,end; end,0,end; end,1,end; end,2,end; end,3,end; end,4,end; end,5,end; end,6,end; end,7,end; end,8,end; end,9,end
+start
+end,justzeroend
