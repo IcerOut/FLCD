@@ -15,6 +15,7 @@ class Grammar:
         self.cuteProductions = []
         self.makeCuteProduction()
 
+
     def getProductions(self):
         return self.cuteProductions
 
@@ -86,14 +87,6 @@ class Grammar:
     def _validate_params(NonTerm: set, Term: set, Prod: dict, Q0: str):
         # Nonterm, Term, and the keys and values of Prod are already guaranteed
         #     to be unique by using sets and dictionaries
-        pattern = re.compile('^[A-Za-z0-9€]+$')
-
-        for elem in NonTerm:
-            assert pattern.match(elem), f'An element in NonTerm is invalid: {elem}!'
-
-        for elem in Term:
-            assert pattern.match(elem), f'An element in Term is invalid: {elem}!'
-
         for lhs, rhs in Prod.items():
             assert lhs in NonTerm, f'A production in the lhs of the Prod uses an invalid source symbol: {lhs}!'
             for elem in rhs:
