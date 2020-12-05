@@ -15,7 +15,32 @@ class Parser:
         self._followSet = {}
         self._M = {}
         self.generateSets()
-        print(self._M)
+        self.pretty_print_table()
+
+    def pretty_print_table(self):
+        cell_max_length = 0
+        for _, outer in self._M.items():
+            for _, inner in outer.items():
+                if len(str(inner)) > cell_max_length:
+                    cell_max_length = len(str(inner))
+
+        columns_headers = list(self._grammar.getTerm() - set('$')) + ['$']
+        row_headers = list(self._grammar.getNonTerm()) + list(
+            self._grammar.getTerm() - set('$')) + ['$']
+
+        cell_max_length += 2
+
+        print('   | ', end='')
+        for column_header in columns_headers:
+            print(column_header, end=' ' * (cell_max_length - 1))
+        print()
+        print('---+-' + '-' * cell_max_length * len(columns_headers))
+        for row in row_headers:
+            print(row, end='  | ')
+            for column in columns_headers:
+                print(f'{str(self._M[row][column]):<{cell_max_length}}', end='')
+            print()
+        print('\n')
 
     def generateSets(self):
         self.startMyFirst()
@@ -35,7 +60,7 @@ class Parser:
             for prod in self._grammar.getProductionsForNonterminal(nonterm):
                 for rhs in prod.getRules():
                     firsts = self.getFirstForSequence(rhs, nonterm)
-                    for term in (self._grammar.getTerm() - set('$')):
+                    for term in (self._grammar.getTerm()):
                         if term in firsts:
                             if self._M[nonterm][term] != ERR:
                                 print('Invalid grammar!')
@@ -47,12 +72,15 @@ class Parser:
                                 self._M[nonterm][term] = (nonterm, rhs)
 
     def getFirstForSequence(self, rhs, st):
+        if len(rhs) == 1 and rhs[0] == "$":
+            return self._followSet[st]
+
         temp = []
         for elem in rhs:
             temp.append(self._firstSet[elem])
+        if temp[0] in self._grammar.getTerm():
+            return temp[0]
         res = self.reduceToSet(temp)
-        # if '$' in res:
-        #     res |= self._followSet[st]
         return res
 
     def startMyFollow(self):
@@ -67,8 +95,6 @@ class Parser:
             self.myFollow(nt, [])
 
     def myFollow(self, nt, visited):
-        if nt == self._grammar.getStartingSymbol():
-            return
         for p in self._grammar.getProductionContainingNonterminal(nt):
             for rhs in p.getRules():
                 if nt in rhs:
@@ -139,9 +165,9 @@ class Parser:
                     if elem in visited:
                         continue
                     if elem in self._grammar.getTerm() and elem != "$":
-
                         self._firstSet[nt].add(elem)
                         temporary.append(set(elem))
+                        break
                     elif elem == "$":
                         self._firstSet[nt].add("$")
                         temporary.append(set("$"))
@@ -151,6 +177,7 @@ class Parser:
                         temporary.append(set(temp))
 
                 res = self.reduceToSet(temporary)
+
                 for e in res:
                     self._firstSet[nt].add(e)
 
