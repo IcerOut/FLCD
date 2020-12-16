@@ -12,7 +12,8 @@ class Production:
 
     def __str__(self):
         s = str(self._start)
-        s += "\n"
+        s+="\n"
         for r in self._rules:
-            s += str(r) + ", "
+            s+=str(r)+", "
         return s
+

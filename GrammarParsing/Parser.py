@@ -7,6 +7,24 @@ ERR = 'ERR'
 POP = 'POP'
 ACC = 'ACC'
 
+class Node:
+    def __init__(self, level, val, parent):
+        self._level = level
+        self._val = val
+        self._parent = parent
+
+    def getLevel(self):
+        return self._level
+
+    def getVal(self):
+        return self._val
+
+    def getParent(self):
+        return self._parent
+
+    def __str__(self):
+        return "Node: "+str(self._val)+","+str(self._level)+","+str(self._parent)+"       "
+
 
 class Parser:
     def __init__(self, gr: Grammar):
@@ -15,37 +33,114 @@ class Parser:
         self._followSet = {}
         self._M = {}
         self.generateSets()
-        self.pretty_print_table()
 
-    def pretty_print_table(self):
+    def printTable(self):
         cell_max_length = 0
-        for _, outer in self._M.items():
-            for _, inner in outer.items():
-                if len(str(inner)) > cell_max_length:
-                    cell_max_length = len(str(inner))
+        for _ , outer in self._M.items ():
+            for _ , inner in outer.items ():
+                if len ( str ( inner ) ) > cell_max_length:
+                    cell_max_length = len ( str ( inner ) )
 
-        columns_headers = list(self._grammar.getTerm() - set('$')) + ['$']
-        row_headers = list(self._grammar.getNonTerm()) + list(
-            self._grammar.getTerm() - set('$')) + ['$']
+        columns_headers = list ( self._grammar.getTerm () - set ( '$' ) ) + ['$']
+        row_headers = list ( self._grammar.getNonTerm () ) + list (
+            self._grammar.getTerm () - set ( '$' ) ) + ['$']
 
         cell_max_length += 2
 
-        print('   | ', end='')
+        print ( '   | ' , end='' )
         for column_header in columns_headers:
-            print(column_header, end=' ' * (cell_max_length - 1))
-        print()
-        print('---+-' + '-' * cell_max_length * len(columns_headers))
+            print ( column_header , end=' ' * (cell_max_length - 1) )
+        print ()
+        print ( '---+-' + '-' * cell_max_length * len ( columns_headers ) )
         for row in row_headers:
-            print(row, end='  | ')
+            print ( row , end='  | ' )
             for column in columns_headers:
-                print(f'{str(self._M[row][column]):<{cell_max_length}}', end='')
-            print()
-        print('\n')
+                print ( f'{str ( self._M[row][column] ):<{cell_max_length}}' , end='' )
+            print ()
+        print ( '\n' )
+
 
     def generateSets(self):
         self.startMyFirst()
         self.startMyFollow()
         self.generateTable()
+
+    def getAllNodesFromLevelAndParent(self, tree, k, parent):
+        res = []
+        for t in tree:
+            for l in t:
+                if l.getLevel()==k and l.getParent()==parent:
+                    res.append(l)
+        return res
+
+    def printTree(self, tree, current):
+        print("\t"*(current.getLevel()-1)+current.getVal())
+        res = self.getAllNodesFromLevelAndParent(tree, current.getLevel()+1, current.getVal())
+        for r in res:
+            self.printTree(tree, r)
+
+    def parseSequence(self, seq):
+
+        stack = [Node(0,"$","-")]
+        stack.append(Node(1, self._grammar.getStartingSymbol(), "$"))
+
+        input = seq.split(' ')
+
+        input.append("$")
+
+        input.reverse()
+
+        actions = []
+
+        tree = []
+        idx=2
+
+        path = []
+        while len(stack)>0:
+            currentNode = stack[len(stack)-1]
+            top = input[len(input)-1]
+            prod = self._M[currentNode.getVal()][top]
+            if currentNode.getVal()=="$":
+                path.append(stack.pop())
+                continue
+            if prod!=ERR:
+                nodeElem = stack.pop()
+                path.append(nodeElem)
+
+                idxE = nodeElem.getLevel()
+
+                if nodeElem.getVal() == top:
+                    copy_list = []
+                    for c in path:
+                        copy_list.append ( c )
+                        path = []
+                    tree.append ( copy_list )
+                    input.pop()
+                    actions.append(POP)
+                else:
+                    new_prods = []
+                    for i in range(len(prod[1])):
+                        new_prods.append(prod[1][i])
+                    new_prods.reverse()
+
+                    actions.append(prod)
+
+                    for p in new_prods:
+                        if p!="$":
+                            stack.append(Node(idxE+1,p,currentNode.getVal()))
+                        else:
+                            stack.append(Node(idxE+1,p,currentNode.getVal()))
+                    idx+=1
+            else:
+                print("Invalid sequence!")
+                return
+
+        for t in tree:
+            for l in t:
+                if l.getVal () == self._grammar.getStartingSymbol () and l.getLevel () == 1:
+                    self.printTree ( tree , l )
+        print("Sequence accepted!")
+
 
     def generateTable(self):
         for row in (self._grammar.getNonTerm() | self._grammar.getTerm() | set('$')):
@@ -72,7 +167,7 @@ class Parser:
                                 self._M[nonterm][term] = (nonterm, rhs)
 
     def getFirstForSequence(self, rhs, st):
-        if len(rhs) == 1 and rhs[0] == "$":
+        if len(rhs)==1 and rhs[0]=="$":
             return self._followSet[st]
 
         temp = []
@@ -166,7 +261,7 @@ class Parser:
                         continue
                     if elem in self._grammar.getTerm() and elem != "$":
                         self._firstSet[nt].add(elem)
-                        temporary.append(set(elem))
+                        temporary.append ( set ( elem ) )
                         break
                     elif elem == "$":
                         self._firstSet[nt].add("$")
