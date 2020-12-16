@@ -1,0 +1,91 @@
+{ - delimiter
+print - keyword
+( - delimiter
+"num_1 = " - STR_CONST
+) - delimiter
+; - delimiter
+UNRECOGNIZED CHARACTER: $
+int - keyword
+num_1 - ID
+= - algebraic operator
+input - keyword
+( - delimiter
+int - keyword
+) - delimiter
+; - delimiter
+print - keyword
+( - delimiter
+"num_2 = " - STR_CONST
+) - delimiter
+; - delimiter
+int - keyword
+num_2 - ID
+= - algebraic operator
+input - keyword
+( - delimiter
+int - keyword
+) - delimiter
+; - delimiter
+print - keyword
+( - delimiter
+"num_3 = " - STR_CONST
+) - delimiter
+; - delimiter
+int - keyword
+3 - INT_CONST
+UNRECOGNIZED CHARACTER: _
+num - ID
+= - algebraic operator
+-15 - INT_CONST
+; - delimiter
+if - keyword
+( - delimiter
+( - delimiter
+num_1 - ID
+> - relational operator
+num_2 - ID
+) - delimiter
+and - logical operator
+( - delimiter
+num_1 - ID
+> - relational operator
+num_3 - ID
+) - delimiter
+) - delimiter
+{ - delimiter
+print - keyword
+( - delimiter
+num_1 - ID
+) - delimiter
+; - delimiter
+} - delimiter
+elif - keyword
+( - delimiter
+( - delimiter
+num_2 - ID
+> - relational operator
+num_1 - ID
+) - delimiter
+and - logical operator
+( - delimiter
+num_2 - ID
+> - relational operator
+num_3 - ID
+) - delimiter
+) - delimiter
+{ - delimiter
+print - keyword
+( - delimiter
+num_2 - ID
+) - delimiter
+; - delimiter
+} - delimiter
+else - keyword
+{ - delimiter
+print - keyword
+( - delimiter
+num_3 - ID
+) - delimiter
+; - delimiter
+} - delimiter
+} - delimiter
