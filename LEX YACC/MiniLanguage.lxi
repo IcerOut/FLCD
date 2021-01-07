@@ -1,0 +1,54 @@
+%{ 	 
+#include <math.h> 
+#include <stdio.h>
+#include "y.tab.h"
+int current_line = 0;
+%}
+%option noyywrap
+
+COMMENT         #[^\n]*\n
+LETTER          [A-Za-z]
+NZDIGIT         [1-9]
+DIGIT           [0-9]
+INT_CONST       "0"|"-"?{NZDIGIT}{DIGIT}*
+STR_CONST       "'"[^\n]*"'"|["][^\n]*["]
+IDENTIFIER      {LETTER}({LETTER}|"_"|{DIGIT})*
+WHITESPACE      [ \t\r\n]
+DELIMITER       "("|")"|"["|"]"|"{"|"}"|"\t"|"\n"|"\\"|","|"\;"
+KEYWORD         "int"|"string"|"print"|"input"|"if"|"elif"|"else"|"while"
+ALG_OP          "+"|"-"|"*"|"/"|"%"|"="
+REL_OP          "<"|"<="|"=="|"!="|">="|">"
+LOG_OP          "and"|"or"|"not"
+SEPARATOR       {DELIMITER}
+
+%%
+
+[\n]+					{current_line++;}
+
+{WHITESPACE}
+{STR_CONST}             {printf("%s - STR_CONST\n", yytext);}
+{COMMENT}
+
+{KEYWORD}               {printf("%s - keyword\n", yytext);}
+{ALG_OP}                {printf("%s - algebraic operator\n", yytext);}
+{REL_OP}                {printf("%s - relational operator\n", yytext);}
+{LOG_OP}                {printf("%s - logical operator\n", yytext);}
+{SEPARATOR}             {printf("%s - delimiter\n", yytext);}
+
+{INT_CONST}             {printf("%s - INT_CONST\n", yytext);}
+{IDENTIFIER}    {printf("%s - ID\n", yytext);}
+
+.                               {printf("UNRECOGNIZED CHARACTER AT LINE %d: %s\n", current_line, yytext ); return -1;}
+%%
+
+int main( argc, argv )
+int argc;
+char **argv;
+{
+    ++argv, --argc; /* skip over program name */
+    if ( argc > 0 )
+    yyin = fopen( argv[0], "r" );
+    else
+     yyin = stdin;
+    yylex();
+}
